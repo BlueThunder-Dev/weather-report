@@ -5,26 +5,25 @@ import { normalizeLocation } from '../../utils/normalizer/normalizeLocation';
 import SuggestionCombobox from '../suggestion-combobox/SuggestionCombobox';
 import { apiKey } from '../../utils/constants';
 
-const SearchInput = ({label,placeholder,validators}) => {
+const SearchInput = ({label,placeholder,validators,onSearchSuccess}) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isInputLoading, setIsInputLoading] = useState(false);
+   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [location, setLocation] = useState({})
   const [locationSelected, setLocationSelected] = useState(false)
 
-  
-  // AJAX con Debounce tramite useEffect
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (query.length >= 2 && !locationSelected) {
         try {
-          setIsLoading(true);
+          setIsInputLoading(true);
           await handleSuggestionsRetrieval(query)
         } catch (err) {
           setError(err)
         } finally {
-          setIsLoading(false);
+          setIsInputLoading(false);
         }
       } else {
         setSuggestions([]);
@@ -38,7 +37,9 @@ const SearchInput = ({label,placeholder,validators}) => {
     const response = await fetch(
       `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`
     );
-    const data = await response.json();
+    const data = await response.json(); 
+
+   
     setSuggestions(normalizeLocation(data));
   }
 
@@ -56,7 +57,6 @@ const SearchInput = ({label,placeholder,validators}) => {
   const handleSelect = (loc) => {
     setLocationValue(loc)
     resetLocationsSuggestions()
-    // Qui potresti passare lat e lon a una funzione prop 'onCitySelect'
     console.log("Coordinate selezionate:", loc);
   };
 
@@ -93,9 +93,30 @@ const SearchInput = ({label,placeholder,validators}) => {
     setSuggestions([]);
 
     if (!validate()) return;
-    //TODO HANDLE SEARCH
-    //TODO WEATHER OUTPUT
-  }
+
+    try {
+      setIsSearchLoading(true);
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${location.city},${location.country.toLowerCase()}&units=metric&APPID=${apiKey}`
+      );
+      const data = await response.json();
+
+      if (onSearchSuccess && data.cod === 200) {
+        onSearchSuccess(data);
+      }else {
+        setSuggestions([]);
+        setQuery('');
+        setError(data.message);
+      }
+
+    } catch (err) {
+      setSuggestions([]);
+      setQuery('');
+      setError('Impossible to retrieve weather data');
+    } finally {
+      setIsSearchLoading(false);
+    }
+  };
 
  const handleErrorRendering = (errorText) => {
   if (!errorText) return null;
@@ -121,7 +142,7 @@ const SearchInput = ({label,placeholder,validators}) => {
 };
 
 const renderForm = () =>{
-  return (<form className={styles.searchWrapper} onSubmit={handleSearch}>
+  return (<><form className={styles.searchWrapper} onSubmit={handleSearch}>
         <div className={`${styles.inputCard} ${error ? styles.inputCardError : ''}`}>
           <div className={styles.labelRow}>
             <label htmlFor={label} className={styles.labelText}>{label}</label>
@@ -136,8 +157,15 @@ const renderForm = () =>{
             placeholder={placeholder}
             autoComplete="off"
           />
-          {isLoading && (
-            <LoadingSpinner/>
+          {isInputLoading && (
+            <div style={{
+                      position: 'absolute',
+                      right: '15px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}><LoadingSpinner size="35px" /></div>
           )}
           {suggestions.length > 0 && <SuggestionCombobox 
             suggestions={suggestions} 
@@ -151,7 +179,14 @@ const renderForm = () =>{
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </button>
-      </form>)
+      </form>
+        {isSearchLoading && (
+            <div style={{
+                      position:"absolute"
+                    }}><LoadingSpinner size="100px"/></div>
+          )}
+       </>
+      )
 }
 
 
