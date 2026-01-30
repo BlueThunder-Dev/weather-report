@@ -7,8 +7,8 @@ import { Required} from './utils/validators/Required';
 function App() {
  const inputValidators = [
     new Required('Input cannot be empty'),
-    new MinLength(3,'Min. 2 characters required'),
-    new Pattern( /^[\p{L}\s-]+$/u, 'Invalid characters')
+    new MinLength(2,'Min. 2 characters required'),
+    new Pattern( /[a-zA-Z\u00C0-\u017F\s\-\'’]+/, 'Invalid characters')
   ];
 
   return (

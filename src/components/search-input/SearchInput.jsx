@@ -1,29 +1,96 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './SearchInput.module.css'; 
+import LoadingSpinner from '../loading-spinner/LoadingSpinner'
+import { normalizeLocation } from '../../utils/normalizer/normalizeLocation';
+import SuggestionCombobox from '../suggestion-combobox/SuggestionCombobox';
+import { apiKey } from '../../utils/constants';
 
 const SearchInput = ({label,placeholder,validators}) => {
   const [query, setQuery] = useState('');
-  const [weather, setWeather] = useState(null);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [location, setLocation] = useState({})
+  const [locationSelected, setLocationSelected] = useState(false)
+
+  
+  // AJAX con Debounce tramite useEffect
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (query.length >= 2 && !locationSelected) {
+        try {
+          setIsLoading(true);
+          await handleSuggestionsRetrieval(query)
+        } catch (err) {
+          setError(err)
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setSuggestions([]);
+      }
+    }, 400); 
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const handleSuggestionsRetrieval = async (query)=>{
+    const response = await fetch(
+      `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`
+    );
+    const data = await response.json();
+    setSuggestions(normalizeLocation(data));
+  }
+
+  const resetLocationsSuggestions = ()=>{
+    setError('')
+    setSuggestions([]);
+  }
+
+  const setLocationValue = (loc) =>{
+    setQuery(loc.displayLabel);
+    setLocation(loc)
+    setLocationSelected(true)
+  }
+
+  const handleSelect = (loc) => {
+    setLocationValue(loc)
+    resetLocationsSuggestions()
+    // Qui potresti passare lat e lon a una funzione prop 'onCitySelect'
+    console.log("Coordinate selezionate:", loc);
+  };
 
   const validate = () => {
+
   for (const validator of validators) {
     if (!validator.execute(query)) {
       setError(validator.getMessage());
       return false; 
     }
   }
+  if(!locationSelected){
+    setError('Before searching, find a place from the list');
+    setQuery('')
+    return false; 
+  }
   return true; 
 };
 
  const handleInputChange = (e) => {
     setError('');
+    setSuggestions([]);
     setQuery(e.target.value);
   };
+
+  const handleKeydown = (e) =>{
+    setLocationSelected(false)
+    setLocation({})
+  }
 
   const handleSearch = async (e) => {
     e.preventDefault();
     setError('');
+    setSuggestions([]);
 
     if (!validate()) return;
     //TODO HANDLE SEARCH
@@ -57,16 +124,25 @@ const renderForm = () =>{
   return (<form className={styles.searchWrapper} onSubmit={handleSearch}>
         <div className={`${styles.inputCard} ${error ? styles.inputCardError : ''}`}>
           <div className={styles.labelRow}>
-            <label for={label} className={styles.labelText}>{label}</label>
+            <label htmlFor={label} className={styles.labelText}>{label}</label>
           </div>
           <input
             id={label}
             type="text"
             className={styles.customInput}
             value={query}
-            onChange={(e) => {handleInputChange(e)}}
+            onChange={handleInputChange}
+            onKeyDown={handleKeydown}
             placeholder={placeholder}
+            autoComplete="off"
           />
+          {isLoading && (
+            <LoadingSpinner/>
+          )}
+          {suggestions.length > 0 && <SuggestionCombobox 
+            suggestions={suggestions} 
+            onSelect={handleSelect} 
+          />}
         </div>
 
         <button type="submit" className={styles.searchBtn} aria-label="Search">
