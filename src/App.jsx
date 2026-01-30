@@ -1,33 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import SearchInput from './components/search-input/SearchInput'
+import { MinLength } from './utils/validators/MinLength';
+import { Pattern } from './utils/validators/Pattern';
+import { Required} from './utils/validators/Required';
 
 function App() {
-  const [count, setCount] = useState(0)
+ const inputValidators = [
+    new Required('Input cannot be empty'),
+    new MinLength(3,'Min. 2 characters required'),
+    new Pattern( /^[\p{L}\s-]+$/u, 'Invalid characters')
+  ];
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+     <SearchInput
+     label="Country"
+     placeholder="Insert a country"
+     validators={inputValidators}
+    />
     </>
   )
 }
