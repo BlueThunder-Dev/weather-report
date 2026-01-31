@@ -53,6 +53,7 @@
   display: flex;
   font-size: 14px;
   justify-content: space-between;
+  align-items: center;
 }
 
 .cityLabel { font-weight: 700;color:var(--city-label)}
@@ -80,27 +81,34 @@
   background-color: var(--history-row-bg);
   padding: 12px 20px;
   border-radius: 12px;
-  font-size: 14px;
-  color: var(--history-row-label);
   margin-bottom: 20px;
+  animation: fadeInSlide 0.4s ease-out forwards;
 }
 
-.historyLoc { font-weight: 500; }
-
-.historyRight {
+.historyInfo {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 20px;
-  color:var(--history-row-right-label)
+  gap: 15px; 
+  flex: 1;
+  justify-content: space-between;
+}
+
+.historyLoc {
+  font-weight: 500;
+  color: var(--city-label);
 }
 
 .historyDate {
   font-size: 13px;
+  color: var(--history-row-right-label);
+  opacity: 0.8;
 }
 
 .historyActions {
   display: flex;
   gap: 10px;
+  margin-left: 15px;
 }
 
 .circleBtn {
@@ -166,4 +174,27 @@
   margin-top: 5px;
   text-transform: capitalize;
   color:var(--extra-info-labels)
+}
+
+@media screen and (max-width:600px){
+  .extraInfoContainer{
+    display:flex; 
+    flex-direction: column-reverse;
+  }
+
+  .historyInfo {
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 4px; 
+  }
+
+  .historyRow {
+    padding: 15px; 
+  }
+
+  .dashboard{
+    margin:0 auto;
+    margin-top: 100px;  
+    width: 70%;
+  }
 }

@@ -10,6 +10,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  margin: 0 auto;
 }
 
 .inputCard {
@@ -113,6 +114,12 @@
 .warningIcon {
   width: 30px;
   height: 30px;
+}
+
+@media screen and (max-width:600px){
+  .searchWrapper{
+    width: 85%;
+  }
 }
 
 

@@ -43,9 +43,12 @@ const WeatherCard = ({ data, history = [], onReSearch, onDeleteHistory, isLoadin
         
         <div className={styles.locationRow}>
           <span className={styles.cityLabel}>{name ? `${name}, ${sys?.country}` : "Search for a city"}</span>
-          <span className={styles.extraInfo}>{dateStr}</span>
-          <span className={styles.extraInfo}>Humidity: {main ? `${main.humidity}%` : "--%"}</span>
-          <span className={styles.extraInfo}>{weather ? weather[0].main : "---"}</span>
+          <div className={styles.extraInfoContainer}>
+              <span className={styles.extraInfo}>{dateStr}</span>
+              <span className={styles.extraInfo}>Humidity: {main ? `${main.humidity}%` : "--%"}</span>
+              <span className={styles.extraInfo}>{weather ? weather[0].main : "---"}</span>
+          </div>
+       
         </div>
       </div>
     );
@@ -68,13 +71,14 @@ const WeatherCard = ({ data, history = [], onReSearch, onDeleteHistory, isLoadin
           <p className={styles.searcHistory}>Search History</p>
           {history.map((item) => (
             <div key={item.id} className={styles.historyRow}>
-              <span className={styles.historyLoc}>{item.name}, {item.country}</span>
-              <div className={styles.historyRight}>
+              <div className={styles.historyInfo}> {/* <-- Nuovo wrapper */}
+                <span className={styles.historyLoc}>{item.name}, {item.country}</span>
                 <span className={styles.historyDate}>{item.date}</span>
-                <div className={styles.historyActions}>
-                  <button className={styles.circleBtn} onClick={() => onReSearch(item)} title="Search again">🔍</button>
-                  <button className={styles.circleBtn} onClick={() => onDeleteHistory(item.id)} title="Delete">🗑️</button>
-                </div>
+              </div>
+              
+              <div className={styles.historyActions}>
+                <button className={styles.circleBtn} onClick={() => onReSearch(item)} title="Search again">🔍</button>
+                <button className={styles.circleBtn} onClick={() => onDeleteHistory(item.id)} title="Delete">🗑️</button>
               </div>
             </div>
           ))}

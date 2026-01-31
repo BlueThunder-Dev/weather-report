@@ -44,3 +44,11 @@
   font-size: 14px;
   user-select: none;
 }
+
+@media screen and (max-width:600px){
+  .switchContainer{
+    width: 92%;
+  }
+}
+
+   
