@@ -173,11 +173,17 @@
   text-transform: capitalize;
   color:var(--extra-info-labels)
 }
+.extraInfoContainer{
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+}
 
 @media screen and (max-width:600px){
   .extraInfoContainer{
     display:flex; 
     flex-direction: column-reverse;
+    max-width: 140px;
   }
 
   .historyInfo {

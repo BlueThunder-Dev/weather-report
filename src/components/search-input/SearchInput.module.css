@@ -80,6 +80,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  font-size: 28px;
 }
 
 .searchBtn:hover {
@@ -101,19 +102,21 @@
   stroke-linejoin: round;
 }
 
-.errorMsg {
-  color: #ffbcbc;
-  margin-top: 15px;
-  font-size: 14px;
-  font-weight: bolder;
-  display: flex;
-  align-items: center;
-  gap: 20px;
+.spinnerWrapper {
+  position: absolute;
+  right: 15px;
+  top: 18px;
+  pointer-events: none;
 }
 
-.warningIcon {
-  width: 30px;
-  height: 30px;
+.errorMsg {
+  color: #ff4d4d;
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bolder;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
 }
 
 @media screen and (max-width:600px){

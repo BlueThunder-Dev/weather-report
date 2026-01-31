@@ -49,7 +49,6 @@ const WeatherCard = ({ data, history = [], onReSearch, onDeleteHistory, isLoadin
         <footer className={styles.locationRow}>
           <span className={styles.cityLabel}>{name ? `${name}, ${sys?.country}` : "Search for a city"}</span>
           <div className={styles.extraInfoContainer}>
-            {/* Qui dateStr è ora correttamente accessibile */}
             <time className={styles.extraInfo} dateTime={dt ? new Date(dt * 1000).toISOString() : undefined}>
               {dateStr}
             </time>
