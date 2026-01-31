@@ -4,8 +4,9 @@ import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 import { normalizeLocation } from '../../utils/normalizer/normalizeLocation';
 import SuggestionCombobox from '../suggestion-combobox/SuggestionCombobox';
 import { apiKey } from '../../utils/constants';
+import { weather } from '../../demo/weather';
 
-const SearchInput = ({label,placeholder,validators,onSearchSuccess}) => {
+const SearchInput = ({label,placeholder,validators,onSearchSuccess ,theme}) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [isInputLoading, setIsInputLoading] = useState(false);
@@ -37,9 +38,7 @@ const SearchInput = ({label,placeholder,validators,onSearchSuccess}) => {
     const response = await fetch(
       `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`
     );
-    const data = await response.json(); 
-
-   
+    const data = await response.json();    
     setSuggestions(normalizeLocation(data));
   }
 
@@ -170,6 +169,7 @@ const renderForm = () =>{
           {suggestions.length > 0 && <SuggestionCombobox 
             suggestions={suggestions} 
             onSelect={handleSelect} 
+            theme={theme}
           />}
         </div>
 

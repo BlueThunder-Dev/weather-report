@@ -1,8 +1,7 @@
 import React from 'react';
-import styles from './SuggestionCombobox.module.css'; // Puoi riutilizzare gli stessi stili o crearne di nuovi
+import styles from './SuggestionCombobox.module.css';
 
-const SuggestionCombobox = ({ suggestions, onSelect }) => {
-  // Se non ci sono suggerimenti, non renderizziamo nulla
+const SuggestionCombobox = ({ suggestions, onSelect ,theme }) => {
   if (suggestions.length === 0) return null;
 
   return (

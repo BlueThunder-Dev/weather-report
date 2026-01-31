@@ -2,32 +2,37 @@ import { useEffect, useState } from 'react';
 import './App.css'
 import SearchInput from './components/search-input/SearchInput'
 import WeatherCard from './components/weather-card/WeatherCard'
+import LightDarkSwitch from './components/light-dark-switch/LightDarkSwitch';
 import { MinLength } from './utils/validators/MinLength';
 import { Pattern } from './utils/validators/Pattern';
 import { Required} from './utils/validators/Required';
+import { apiKey } from './utils/constants';
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
+  const [theme, setTheme] = useState('dark');
   const [history, setHistory] = useState(() => {
-    // 1. Inizializzazione sicura: legge dal disco o parte vuoto
     const saved = localStorage.getItem('weatherHistory');
     return saved ? JSON.parse(saved) : [];
   });
 
-  // 2. Persistenza Automatica
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+  
   useEffect(() => {
     localStorage.setItem('weatherHistory', JSON.stringify(history));
-  }, [history]); // Esegue il salvataggio ogni volta che aggiungi o elimini
-
-  const handleWeatherUpdate = (data) => {
-    setWeatherData(data);
-  }; 
+  }, [history]);
 
   const handleSearchSuccess = (newData) => {
     setWeatherData(newData);
     
     const historyItem = {
-      id: `${newData.name}-${Date.now()}`, // ID più robusto
+      id: `${newData.name}-${Date.now()}`,
       name: newData.name,
       country: newData.sys.country,
       date: new Date().toLocaleString('en-GB', {
@@ -39,13 +44,11 @@ function App() {
     };
     
     setHistory(prev => {
-      // Rimuoviamo eventuali duplicati della stessa città per portarla in cima
       const filtered = prev.filter(item => item.name !== newData.name);
       return [historyItem, ...filtered].slice(0, 10);
     });
   };
 
- // Elimina record
 const deleteHistoryItem = (id) => {
   setHistory(prev => prev.filter(item => item.id !== id));
 };
@@ -69,13 +72,16 @@ const reSearchFromHistory = async (item) => {
 
   return (
     <>
+    <LightDarkSwitch theme={theme} onToggle={toggleTheme} />
      <SearchInput
      label="Country"
      placeholder="Insert a country"
-     onSearchSuccess={handleWeatherUpdate}
+     onSearchSuccess={handleSearchSuccess}
      validators={inputValidators}
+     theme={theme}
     />
     {weatherData && <WeatherCard data={weatherData} 
+      theme={theme}
       history={history}
       onDeleteHistory={deleteHistoryItem}
       onReSearch={reSearchFromHistory}/>}

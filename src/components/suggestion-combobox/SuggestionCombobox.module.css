@@ -1,9 +1,9 @@
 .SuggestionCombobox {
   position: absolute;
-  top: calc(100% + 5px); /* Un piccolo gap dall'input */
+  top: calc(100% + 5px); 
   left: 0;
   right: 0;
-  background: #2d2d44; /* Un tono più scuro del contenitore per contrasto */
+  background: var(--search-btn-bg); 
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   list-style: none;
@@ -11,8 +11,8 @@
   margin: 0;
   z-index: 1000;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  overflow: hidden; /* Taglia i bordi dei li per il border-radius */
-  backdrop-filter: blur(10px); /* Effetto sfocato professionale */
+  overflow: hidden; 
+  backdrop-filter: blur(10px); 
 }
 
 .suggestionItem {
@@ -26,21 +26,18 @@
   transition: all 0.2s ease-in-out;
 }
 
-/* Hover professionale */
 .suggestionItem:hover {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
-  padding-left: 20px; /* Piccolo movimento a destra sull'hover */
+  padding-left: 20px; 
 }
 
-/* Aggiungiamo un'icona placeholder prima del testo (opzionale) */
 .suggestionItem::before {
-  content: '📍'; /* O un'icona SVG */
+  content: '📍';
   font-size: 12px;
   opacity: 0.6;
 }
 
-/* Scrollbar sottile per la lista */
 .SuggestionCombobox::-webkit-scrollbar {
   width: 6px;
 }

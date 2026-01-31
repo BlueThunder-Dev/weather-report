@@ -2,13 +2,14 @@
   position: relative;
   width: 80vw;
   max-width: 700px;
-  background: rgba(30, 25, 55, 0.45); 
+  background: var(--dashboard-bg); 
   backdrop-filter: blur(15px);
   border-radius: 40px;
   padding: 40px 45px;
   color: #ffffff;
   margin-top: 100px; 
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--dashboard-border)
 }
 
 .floatingIcon {
@@ -25,9 +26,9 @@
 
 .todayLabel {
   font-size: 16px;
-  font-weight: 300;
   margin: 0;
   display:flex; 
+  color:var(--today-label)
 }
 
 .temp {
@@ -36,24 +37,26 @@
   margin: 5px 0;
   line-height: 1;
   display: flex;
+  color: var(--temp-label);
+  position: relative;
+  right: 12px;
 }
 
 .highLow {
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.7);
+  color:var(--today-label);
   display: flex;
+  margin: 0;
 }
 
 .locationRow {
   display: flex;
-  gap: 25px;
   font-size: 14px;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.9);
+  justify-content: space-between;
 }
 
-.boldLabel { font-weight: 700; }
-.dateLabel { color: rgba(255, 255, 255, 0.6); }
+.cityLabel { font-weight: 700;color:var(--city-label)}
+.extraInfo {color: var(--extra-info-labels); }
 
 
 .historyBox {
@@ -74,10 +77,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1f1637;
+  background-color: var(--history-row-bg);
   padding: 12px 20px;
   border-radius: 12px;
   font-size: 14px;
+  color: var(--history-row-label)
 }
 
 .historyLoc { font-weight: 500; }
@@ -86,11 +90,11 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  color:var(--history-row-right-label)
 }
 
 .historyDate {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
 }
 
 .historyActions {
@@ -102,8 +106,8 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-  background: transparent;
+  border: 2px solid var(--history-btn-border);
+  background: var(--history-btn-bg);
   color: white;
   cursor: pointer;
   display: flex;
@@ -114,6 +118,21 @@
 }
 
 .circleBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--history-btn-border-hover);
   border-color: white;
+}
+
+.historyContainer{
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--history-container-bg);
+  border-radius: 20px;
+}
+
+.searcHistory{
+   color: var(--today-label);
+    padding: 0;
+    margin: 0 8px;
+    margin-bottom: 10px;
+    display: flex;
 }

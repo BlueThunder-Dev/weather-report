@@ -13,15 +13,15 @@
 }
 
 .inputCard {
-    position: relative;
-    overflow: visible !important;
-    background-color: #3b2a63;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    width: 80vw;
-    max-width: 700px;
+  position: relative;
+  overflow: visible !important;
+  background-color: var(--input-bg);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  width: 80vw;
+  max-width: 700px;
 }
 
 .inputCardError {
@@ -36,7 +36,7 @@
 }
 
 .labelText {
-  color: #a394c2;
+  color: var(--input-label);
   opacity:0.5;
   font-size: 12px;
   letter-spacing: 0.5px;
@@ -52,23 +52,24 @@
 }
 
 .customInput {
-  background-color: #3b2a63;
+  background-color: var(--input-bg);
   border:none;
   border-radius: 10px;
   padding: 15px 15px;
   padding-top: 4px;
-  color: #a394c2;
+  color: var(--input-text);
   font-size: 18px;
   outline: none;
   width: 80%;
 }
 
 .customInput::placeholder {
-  color: #7a6ba8;
+  color: var(--input-placeholder);
+  opacity:0.2
 }
 
 .searchBtn {
-  background-color: #1f1637;
+  background-color: var(--search-btn-bg);
   border: none;
   border-radius: 10px;
   width: 70px;
