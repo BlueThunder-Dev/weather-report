@@ -14,8 +14,8 @@
 
 .floatingIcon {
   position: absolute;
-  top: -110px; 
-  right: -60px;
+  top: -160px; 
+  right: -0px;
   z-index: 10;
 }
 
@@ -38,8 +38,6 @@
   line-height: 1;
   display: flex;
   color: var(--temp-label);
-  position: relative;
-  right: 12px;
 }
 
 .highLow {
@@ -184,7 +182,7 @@
 
   .historyInfo {
     flex-direction: column; 
-    align-items: flex-start;
+    align-items: center;
     gap: 4px; 
   }
 
@@ -196,5 +194,17 @@
     margin:0 auto;
     margin-top: 100px;  
     width: 70%;
+  }
+
+  .floatingIcon img{
+    width:  220px; 
+  }
+
+  .floatingIcon {
+    top: -110px;
+  }
+  
+  .temp{
+    font-size: 60px
   }
 }

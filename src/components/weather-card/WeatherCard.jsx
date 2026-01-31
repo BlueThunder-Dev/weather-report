@@ -1,21 +1,26 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import styles from './WeatherCard.module.css';
 import LoadingSpinner from '../loading-spinner/LoadingSpinner';
 
 const WeatherCard = ({ data, history = [], onReSearch, onDeleteHistory, isLoading, error }) => {
   const { main, weather, name, sys, dt } = data || {};
-  
-  const dateStr = dt 
-    ? new Date(dt * 1000).toLocaleString('en-GB', {
+  const dateStr = useMemo(() => {
+    if (!dt) return "--/--/---- --:--";
+    try {
+      return new Date(dt * 1000).toLocaleString('en-GB', {
         day: '2-digit', month: '2-digit', year: 'numeric',
         hour: '2-digit', minute: '2-digit', hour12: true
-      }).replace(/\//g, '-').replace(',', '')
-    : "--/--/---- --:--";
+      }).replace(/\//g, '-').replace(',', '');
+    } catch (e) {
+      return "--/--/---- --:--";
+    }
+  }, [dt]);
 
-  const renderMainContent = () => {
+  const renderMainStats = () => {
     if (isLoading) {
       return (
-        <div className={styles.loadingContainer}>
+        <div className={styles.loadingContainer} role="status">
           <LoadingSpinner size="100px" />
           <p>Fetching weather data...</p>
         </div>
@@ -24,9 +29,9 @@ const WeatherCard = ({ data, history = [], onReSearch, onDeleteHistory, isLoadin
 
     if (error) {
       return (
-        <div className={styles.errorContainer}>
+        <div className={styles.errorContainer} role="alert">
           <div className={styles.errorIcon}>⚠️</div>
-          <p className={styles.errorTitle}>Something went wrong</p>
+          <h2 className={styles.errorTitle}>Something went wrong</h2>
           <p className={styles.errorText}>{error}</p>
         </div>
       );
@@ -35,57 +40,82 @@ const WeatherCard = ({ data, history = [], onReSearch, onDeleteHistory, isLoadin
     return (
       <div className={styles.mainStats}>
         <p className={styles.todayLabel}>Today's Weather</p>
-        <h1 className={styles.temp}>{main ? `${Math.round(main.temp)}°` : "--°"}</h1>
+        <h1 className={styles.temp}>{main?.temp ? `${Math.round(main.temp)}°` : "--°"}</h1>
         <p className={styles.highLow}>
-          H: {main ? `${Math.round(main.temp_max)}°` : "--°"} 
-          L: {main ? `${Math.round(main.temp_min)}°` : "--°"}
+          H: {main?.temp_max ? `${Math.round(main.temp_max)}°` : "--°"} 
+          L: {main?.temp_min ? `${Math.round(main.temp_min)}°` : "--°"}
         </p>
         
-        <div className={styles.locationRow}>
+        <footer className={styles.locationRow}>
           <span className={styles.cityLabel}>{name ? `${name}, ${sys?.country}` : "Search for a city"}</span>
           <div className={styles.extraInfoContainer}>
-              <span className={styles.extraInfo}>{dateStr}</span>
-              <span className={styles.extraInfo}>Humidity: {main ? `${main.humidity}%` : "--%"}</span>
-              <span className={styles.extraInfo}>{weather ? weather[0].main : "---"}</span>
+            {/* Qui dateStr è ora correttamente accessibile */}
+            <time className={styles.extraInfo} dateTime={dt ? new Date(dt * 1000).toISOString() : undefined}>
+              {dateStr}
+            </time>
+            <span className={styles.extraInfo}>Humidity: {main?.humidity ?? "--"}%</span>
+            <span className={styles.extraInfo}>{weather?.[0]?.main ?? "---"}</span>
           </div>
-       
-        </div>
+        </footer>
       </div>
     );
   };
 
   return (
-    <div className={styles.dashboard}>
-      <div className={styles.floatingIcon}>
-       { !error && weather ? (
-          <img src={`http://openweathermap.org/img/wn/${weather[0].icon}@4x.png`} alt="weather" />
-        ) : null}
-      </div>
+    <article className={styles.dashboard}>
+      <header className={styles.floatingIcon} aria-hidden="true">
+        {!error && !isLoading && weather?.[0] && (
+          <img src={`http://openweathermap.org/img/wn/${weather[0].icon}@4x.png`} alt="" />
+        )}
+      </header>
 
-      <div className={styles.topContent}>
-        {renderMainContent()}
-      </div>
+      <section className={styles.topContent}>
+        {renderMainStats()}
+      </section>
 
-      {Array.isArray(history) && history.length > 0 && (
-        <div className={styles.historyContainer}>
+      {history.length > 0 && (
+        <nav className={styles.historyContainer} aria-label="Search history">
           <p className={styles.searcHistory}>Search History</p>
-          {history.map((item) => (
-            <div key={item.id} className={styles.historyRow}>
-              <div className={styles.historyInfo}> {/* <-- Nuovo wrapper */}
-                <span className={styles.historyLoc}>{item.name}, {item.country}</span>
-                <span className={styles.historyDate}>{item.date}</span>
-              </div>
-              
-              <div className={styles.historyActions}>
-                <button className={styles.circleBtn} onClick={() => onReSearch(item)} title="Search again">🔍</button>
-                <button className={styles.circleBtn} onClick={() => onDeleteHistory(item.id)} title="Delete">🗑️</button>
-              </div>
-            </div>
-          ))}
-        </div> 
+          <ul className={styles.historyList} style={{ listStyle: 'none', padding: 0 }}>
+            {history.map((item) => (
+              <li key={item.id} className={styles.historyRow}>
+                <div className={styles.historyInfo}>
+                  <span className={styles.historyLoc}>{item.name}, {item.country}</span>
+                  <span className={styles.historyDate}>{item.date}</span>
+                </div>
+                
+                <div className={styles.historyActions}>
+                  <button 
+                    className={styles.circleBtn} 
+                    onClick={() => onReSearch(item)} 
+                    aria-label={`Search again for ${item.name}`}
+                  >
+                    🔍
+                  </button>
+                  <button 
+                    className={styles.circleBtn} 
+                    onClick={() => onDeleteHistory(item.id)} 
+                    aria-label={`Delete ${item.name} from history`}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </nav> 
       )}
-    </div>
+    </article>
   );
+};
+
+WeatherCard.propTypes = {
+  data: PropTypes.object,
+  history: PropTypes.array,
+  onReSearch: PropTypes.func.isRequired,
+  onDeleteHistory: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
+  error: PropTypes.string
 };
 
 export default WeatherCard;
