@@ -12,7 +12,8 @@ const SearchInput = ({label,placeholder,validators,onSearchSuccess ,onSearchErro
   const [isInputLoading, setIsInputLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [location, setLocation] = useState({})
-  const [locationSelected, setLocationSelected] = useState(false)
+  const [locationSelected, setLocationSelected] = useState(false); 
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const handleSuggestionsRetrieval = useCallback(async (query) => {
   const response = await fetch(
@@ -21,6 +22,10 @@ const SearchInput = ({label,placeholder,validators,onSearchSuccess ,onSearchErro
   const data = await response.json();    
   setSuggestions(normalizeLocation(data));
   }, []); 
+
+  useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [suggestions]);
 
   useEffect(() => {
   if (backupLocation && backupLocation.city) {
@@ -93,6 +98,37 @@ const SearchInput = ({label,placeholder,validators,onSearchSuccess ,onSearchErro
     setLocation({});
   }
 
+  const handleKeyDown = (e) => {
+  if (suggestions.length === 0) return;
+
+  switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault(); 
+        setHighlightedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
+        break;
+        
+      case 'ArrowUp':
+        e.preventDefault();
+        setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
+        break;
+        
+      case 'Enter':
+        if (highlightedIndex >= 0) {
+          e.preventDefault();
+          handleSelect(suggestions[highlightedIndex]);
+        }
+        break;
+        
+      case 'Escape':
+        setSuggestions([]);
+        setHighlightedIndex(-1);
+        break;
+        
+      default:
+        break;
+    }
+  };
+
   const handleSearch = async (e) => {
     e.preventDefault();
     setError('');
@@ -153,8 +189,11 @@ const renderForm = () =>{
             value={query}
             onChange={handleInputChange}
             onKeyUp={handleKeyup}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            autoComplete="off"
+            aria-autocomplete="list"
+            aria-controls="suggestion-listbox"
+            aria-activedescendant={highlightedIndex >= 0 ? `suggestion-item-${highlightedIndex}` : undefined}
           />
           {isInputLoading && (
             <div style={{
@@ -166,11 +205,14 @@ const renderForm = () =>{
                       alignItems: 'center'
                     }}><LoadingSpinner size="35px" /></div>
           )}
-          {suggestions.length > 0 && <SuggestionCombobox 
-            suggestions={suggestions} 
-            onSelect={handleSelect} 
-            theme={theme}
-          />}
+          {suggestions.length > 0 && (
+            <SuggestionCombobox 
+              suggestions={suggestions} 
+              onSelect={handleSelect} 
+              highlightedIndex={highlightedIndex}
+              setHighlightedIndex={setHighlightedIndex} 
+            />
+          )}
         </div>
 
         <button type="submit" className={styles.searchBtn} aria-label="Search">
