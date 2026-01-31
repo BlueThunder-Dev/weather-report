@@ -1,28 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './SearchInput.module.css'; 
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 import { normalizeLocation } from '../../utils/normalizer/normalizeLocation';
 import SuggestionCombobox from '../suggestion-combobox/SuggestionCombobox';
 import { apiKey } from '../../utils/constants';
-import { weather } from '../../demo/weather';
 
-const SearchInput = ({label,placeholder,validators,onSearchSuccess ,theme}) => {
+
+const SearchInput = ({label,placeholder,validators,onSearchSuccess ,onSearchError,theme ,backupLocation}) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [isInputLoading, setIsInputLoading] = useState(false);
-   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [location, setLocation] = useState({})
   const [locationSelected, setLocationSelected] = useState(false)
+
+  const handleSuggestionsRetrieval = useCallback(async (query) => {
+  const response = await fetch(
+    `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`
+  ); 
+  const data = await response.json();    
+  setSuggestions(normalizeLocation(data));
+  }, []); 
+
+  useEffect(() => {
+  if (backupLocation && backupLocation.city) {
+    setLocationValue(backupLocation);
+  }
+}, [backupLocation]);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (query.length >= 2 && !locationSelected) {
         try {
           setIsInputLoading(true);
-          await handleSuggestionsRetrieval(query)
+          await handleSuggestionsRetrieval(query);
         } catch (err) {
-          setError(err)
+          setError(err);
         } finally {
           setIsInputLoading(false);
         }
@@ -32,15 +45,7 @@ const SearchInput = ({label,placeholder,validators,onSearchSuccess ,theme}) => {
     }, 400); 
 
     return () => clearTimeout(timer);
-  }, [query]);
-
-  const handleSuggestionsRetrieval = async (query)=>{
-    const response = await fetch(
-      `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`
-    );
-    const data = await response.json();    
-    setSuggestions(normalizeLocation(data));
-  }
+  }, [query, locationSelected, handleSuggestionsRetrieval]);
 
   const resetLocationsSuggestions = ()=>{
     setError('')
@@ -56,7 +61,6 @@ const SearchInput = ({label,placeholder,validators,onSearchSuccess ,theme}) => {
   const handleSelect = (loc) => {
     setLocationValue(loc)
     resetLocationsSuggestions()
-    console.log("Coordinate selezionate:", loc);
   };
 
   const validate = () => {
@@ -81,9 +85,12 @@ const SearchInput = ({label,placeholder,validators,onSearchSuccess ,theme}) => {
     setQuery(e.target.value);
   };
 
-  const handleKeydown = (e) =>{
-    setLocationSelected(false)
-    setLocation({})
+  const handleKeyup = (e) =>{
+    if(["backspace","delete"].includes(e.key.toLowerCase())){
+      setQuery('')
+    };
+    setLocationSelected(false);
+    setLocation({});
   }
 
   const handleSearch = async (e) => {
@@ -94,29 +101,22 @@ const SearchInput = ({label,placeholder,validators,onSearchSuccess ,theme}) => {
     if (!validate()) return;
 
     try {
-      setIsSearchLoading(true);
+   
+      if (onSearchError) onSearchError(null);
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location.city},${location.country.toLowerCase()}&units=metric&APPID=${apiKey}`
-      );
+      );      
       const data = await response.json();
-
-      if (onSearchSuccess && data.cod === 200) {
-        onSearchSuccess(data);
-      }else {
-        setSuggestions([]);
-        setQuery('');
-        setError(data.message);
-      }
-
-    } catch (err) {
-      setSuggestions([]);
-      setQuery('');
-      setError('Impossible to retrieve weather data');
-    } finally {
-      setIsSearchLoading(false);
+        if (data.cod !== 200) {
+          throw new Error();
+        }else{
+          if (onSearchSuccess) onSearchSuccess(data);
+        }
+    } catch {
+      if (onSearchError) onSearchError('Impossible to retrieve weather data');
     }
   };
-
+  
  const handleErrorRendering = (errorText) => {
   if (!errorText) return null;
 
@@ -152,7 +152,7 @@ const renderForm = () =>{
             className={styles.customInput}
             value={query}
             onChange={handleInputChange}
-            onKeyDown={handleKeydown}
+            onKeyUp={handleKeyup}
             placeholder={placeholder}
             autoComplete="off"
           />
@@ -180,11 +180,6 @@ const renderForm = () =>{
           </svg>
         </button>
       </form>
-        {isSearchLoading && (
-            <div style={{
-                      position:"absolute"
-                    }}><LoadingSpinner size="100px"/></div>
-          )}
        </>
       )
 }

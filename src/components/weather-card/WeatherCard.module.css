@@ -81,7 +81,8 @@
   padding: 12px 20px;
   border-radius: 12px;
   font-size: 14px;
-  color: var(--history-row-label)
+  color: var(--history-row-label);
+  margin-bottom: 20px;
 }
 
 .historyLoc { font-weight: 500; }
@@ -135,4 +136,34 @@
     margin: 0 8px;
     margin-bottom: 10px;
     display: flex;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 10px;
+  text-align: center;
+}
+
+.errorIcon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.errorTitle {
+  font-weight: bold;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  margin: 0;
+  color: var(--city-label)
+}
+
+.errorText {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 5px;
+  text-transform: capitalize;
+  color:var(--extra-info-labels)
 }

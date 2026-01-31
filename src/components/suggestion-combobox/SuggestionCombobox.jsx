@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './SuggestionCombobox.module.css';
 
-const SuggestionCombobox = ({ suggestions, onSelect ,theme }) => {
+const SuggestionCombobox = ({ suggestions, onSelect }) => {
   if (suggestions.length === 0) return null;
 
   return (
