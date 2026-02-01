@@ -90,7 +90,6 @@ const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onS
   };
 
   const handleInputChange = (e) => {
-    console.log("In inpu change")
     const value = e.target.value;
     setQuery(value);
     setLocationSelected(false);
