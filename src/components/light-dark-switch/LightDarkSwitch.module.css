@@ -1,0 +1,61 @@
+.switchContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+}
+
+.switchBase {
+  width: 60px;
+  height: 32px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: background-color 0.4s ease;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+  background-color: var(--input-bg);
+}
+
+
+.circle {
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  background-color: var(--history-row-bg);
+}
+
+.dark .circle {
+  transform: translateX(28px);
+  border: 2px solid #00d4ff; 
+  box-shadow: inset 0 0 6px #7B61FF;
+  background: rgba(123, 97, 255, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.light .circle {
+  transform: translateX(0);
+}
+
+.icon {
+  font-size: 14px;
+  user-select: none;
+}
+
+@media screen and (max-width:600px){
+  .switchContainer{
+    width: 92%;
+  }
+}
+
+   

@@ -1,0 +1,234 @@
+.dashboard {
+  position: relative;
+  width: 80vw;
+  max-width: 700px;
+  background: var(--dashboard-bg); 
+  backdrop-filter: blur(15px);
+  border-radius: 30px;
+  padding: 40px 45px;
+  color: #ffffff;
+  margin-top: 100px; 
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--dashboard-border)
+}
+
+.floatingIcon {
+  position: absolute;
+  top: -160px; 
+  right: -0px;
+  z-index: 10;
+}
+
+.floatingIcon img {
+  width: 320px; 
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+}
+
+.todayLabel {
+  font-size: 16px;
+  margin: 0;
+  display:flex; 
+  color:var(--today-label)
+}
+
+.temp {
+  font-size: 120px; 
+  font-weight: 700;
+  margin: 5px 0;
+  line-height: 1;
+  display: flex;
+  color: var(--temp-label);
+}
+
+.highLow {
+  font-size: 15px;
+  color:var(--today-label);
+  display: flex;
+  margin: 0;
+}
+
+.locationRow {
+  display: flex;
+  font-size: 14px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top:10px;
+}
+
+.cityLabel { font-weight: 700;color:var(--city-label)}
+.extraInfo {color: var(--extra-info-labels); }
+
+
+.historyBox {
+  background: #3b2a63;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 20px;
+}
+
+.historyTitle {
+  font-size: 14px;
+  display: flex; 
+  opacity: 0.8;
+  margin-left: 8px;
+}
+
+.historyRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--history-row-bg);
+  padding: 12px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  animation: fadeInSlide 0.4s ease-out forwards;
+}
+
+.historyInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px; 
+  flex: 1;
+  justify-content: space-between;
+}
+
+.historyLoc {
+  font-weight: 500;
+  color: var(--city-label);
+}
+
+.historyDate {
+  font-size: 13px;
+  color: var(--history-row-right-label);
+  opacity: 0.8;
+}
+
+.historyActions {
+  display: flex;
+  gap: 10px;
+  margin-left: 15px;
+}
+
+.circleBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--history-btn-border);
+  background: var(--history-btn-bg);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.circleBtn:hover {
+  background: var(--history-btn-border-hover);
+  border-color: white;
+}
+
+.historyContainer{
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--history-container-bg);
+  border-radius: 20px;
+}
+
+.searcHistory{
+   color: var(--today-label);
+    padding: 0;
+    margin: 0 8px;
+    margin-bottom: 10px;
+    display: flex;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 10px;
+  text-align: center;
+}
+
+.errorIcon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.errorTitle {
+  font-weight: bold;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  margin: 0;
+  color: var(--city-label)
+}
+
+.errorText {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 5px;
+  text-transform: capitalize;
+  color:var(--extra-info-labels)
+}
+.extraInfoContainer{
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media screen and (max-width:600px){
+
+  .dashboard{
+    padding: 30px 30px
+  }
+
+  .locationRow {
+    align-items: flex-start;
+  }
+
+  .extraInfoContainer{
+    display:flex; 
+    flex-direction: column-reverse;
+    max-width: 140px;
+    height:22px
+  }
+
+  .historyInfo {
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 4px; 
+  }
+
+  .historyRow {
+    padding: 15px; 
+  }
+
+  .dashboard{
+    margin:0 auto;
+    margin-top: 100px;  
+    width: 80%;
+  }
+
+  .floatingIcon img{
+    width:  220px; 
+  }
+
+  .floatingIcon {
+    top: -110px;
+  }
+  
+  .temp{
+    font-size: 60px
+  }
+}
+
+@media screen and (max-width:420px){
+  .dashboard{
+    width: 74%;
+    padding: 20px 25px
+  }
+}
