@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import LightDarkSwitch from './LightDarkSwitch';
 
 describe('LightDarkSwitch Component', () => {
@@ -52,7 +52,7 @@ describe('LightDarkSwitch Component', () => {
   });
 
   it('should sync the data-theme attribute every time the state changes', () => {
-    const { rerender } = render(<LightDarkSwitch />);
+    render(<LightDarkSwitch />);
     const button = screen.getByRole('button', { name: /toggle theme/i });
 
     fireEvent.click(button);

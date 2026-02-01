@@ -31,20 +31,20 @@
 :root[data-theme='light'] {
   --bg-app: url("./assets/images/bg-light.png");
   --card-bg: rgba(255, 255, 255, 0.25); 
-  --input-bg: #cdb8ff;
+  --input-bg: #bca9eb;
   --input-label:#1f1f1f;
   --input-text: #000000; 
   --input-placeHolder: #bbbbbb;
   --search-btn-bg: #6749ac;
   --search-btn-bg-hover: #8d63ee;
-  --dashboard-bg: rgb(238 235 255 / 30%);
+  --dashboard-bg: rgb(238 235 255 / 16%);
   --dashboard-border: #e2d5ff;
   --history-row-bg: #e2d5ff;
   --today-label: #000000;
   --temp-label: #6749ac;
   --city-label: #424242;
   --extra-info-labels: #5c5c5c;
-  --history-container-bg:#d7c7ffa6;
+  --history-container-bg:#d7c7ff8f;
   --history-row-label: #000000;
   --history-row-right-label: #000000;
   --history-btn-bg: #f5f0ff;
@@ -54,10 +54,12 @@
 
 :root[data-theme='dark']{
   background-image: url("./assets/images/bg-dark.png");
+  background-repeat: repeat;
 }
 
 :root[data-theme='light']{
   background-image: url("./assets/images/bg-light.png");
+  background-repeat: repeat;
 }
 
 body{
