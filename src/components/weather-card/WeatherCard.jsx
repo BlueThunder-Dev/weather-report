@@ -72,38 +72,42 @@ const WeatherCard = ({ data, history = [], onReSearch, onDeleteHistory, isLoadin
         {renderMainStats()}
       </section>
 
-      {history.length > 0 && (
+     
         <nav className={styles.historyContainer} aria-label="Search history">
           <p className={styles.searcHistory}>Search History</p>
-          <ul className={styles.historyList} style={{ listStyle: 'none', padding: 0 }}>
-            {history.map((item) => (
-              <li key={item.id} className={styles.historyRow}>
-                <div className={styles.historyInfo}>
-                  <span className={styles.historyLoc}>{item.name}, {item.country}</span>
-                  <span className={styles.historyDate}>{item.date}</span>
-                </div>
-                
-                <div className={styles.historyActions}>
-                  <button 
-                    className={styles.circleBtn} 
-                    onClick={() => onReSearch(item)} 
-                    aria-label={`Search again for ${item.name}`}
-                  >
-                    🔍
-                  </button>
-                  <button 
-                    className={styles.circleBtn} 
-                    onClick={() => onDeleteHistory(item.id)} 
-                    aria-label={`Delete ${item.name} from history`}
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+           {history.length > 0 ?
+            (<ul className={styles.historyList} style={{ listStyle: 'none', padding: 0 }}>
+              {history.map((item) => (
+                <li key={item.id} className={styles.historyRow}>
+                  <div className={styles.historyInfo}>
+                    <span className={styles.historyLoc}>{item.name}, {item.country}</span>
+                    <span className={styles.historyDate}>{item.date}</span>
+                  </div>
+                  
+                  <div className={styles.historyActions}>
+                    <button 
+                      className={styles.circleBtn} 
+                      onClick={() => onReSearch(item)} 
+                      aria-label={`Search again for ${item.name}`}
+                    >
+                      🔍
+                    </button>
+                    <button 
+                      className={styles.circleBtn} 
+                      onClick={() => onDeleteHistory(item.id)} 
+                      aria-label={`Delete ${item.name} from history`}
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>)
+           : (<div className={styles.emptyHistory}>
+                <p className={styles.emptyText}>No search history yet</p>
+            </div>)}
         </nav> 
-      )}
+     
     </article>
   );
 };

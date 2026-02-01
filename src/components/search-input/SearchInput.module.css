@@ -17,7 +17,7 @@
   position: relative;
   overflow: visible !important;
   background-color: var(--input-bg);
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
@@ -55,7 +55,7 @@
 .customInput {
   background-color: var(--input-bg);
   border:none;
-  border-radius: 10px;
+  border-radius: 20px;
   padding: 15px 15px;
   padding-top: 4px;
   color: var(--input-text);
@@ -72,7 +72,7 @@
 .searchBtn {
   background-color: var(--search-btn-bg);
   border: none;
-  border-radius: 10px;
+  border-radius: 20px;
   width: 70px;
   height: 70px;
   cursor: pointer;
