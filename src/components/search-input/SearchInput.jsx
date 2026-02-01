@@ -143,7 +143,7 @@ const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onS
       
       if (data.cod !== 200) throw new Error(data.message);
       if (onSearchSuccess) onSearchSuccess(data);
-    } catch (err) {
+    } catch {
       if (onSearchError) onSearchError('Unable to retrieve weather data. Please try again.');
     }finally {
       setIsSearchLoading(false);
