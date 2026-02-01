@@ -1,16 +1,47 @@
-# React + Vite
+## Weather Report
+Weather Report is a high-performance, responsive dashboard where the user can search for a specified location the weather conditions in real time
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Key Features
+# 1. Intelligent Search
+Predictive Suggestion Engine: Powered by the SuggestionCombobox component, offering real-time city filtering.
 
-Currently, two official plugins are available:
+# 2. Dual-Engine Theming (Light/Dark)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Dynamic Visuals: The UI shifts between a "Golden Hour" light mode and a "Deep Space" dark mode, utilizing a centralized CSS Variable system for consistency.
 
-## React Compiler
+Accessible Toggle: The LightDarkSwitch is fully ARIA-compliant, providing screen readers with accurate state information.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# 3. Weather Intelligence Display
+Real-Time Metrics: Instant access to temperature, weather conditions, and atmospheric data.
 
-## Expanding the ESLint configuration
+Smooth Transitions: Integrated LoadingSpinner with dynamic scaling logic ensures a polished feel during data fetching.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Configuration & API Setup
+For security reasons, API keys are managed through environment variables.
+
+Get a Key: Register at OpenWeatherMap to receive an API Key.
+
+Create .env: In the root directory, create a .env file.
+
+Add your Key:
+
+Code Snippet:
+VITE_WEATHER_API_KEY=your_actual_api_key_here
+Reviewer Note: For convenience during the technical assessment, a temporary .env file has been included in the ZIP package. In a production workflow, this file is excluded via .gitignore.
+
+## Installation & Usage
+Bash
+# 1. Install dependencies
+npm install
+
+# 2. Run the development server
+npm run dev
+
+# 3. Execute all unit tests
+npm run test
+
+# 4. Build for production
+npm run build
+
+## Author
+Pierpaolo Corsale - Technical Assessment Project - 1 February 2026

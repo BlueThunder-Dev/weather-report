@@ -19,11 +19,6 @@ function App() {
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [weatherError, setWeatherError] = useState(null);
   const [backupLocation, setBackupLocation] = useState(null);
-  
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -32,6 +27,11 @@ function App() {
   useEffect(() => {
     localStorage.setItem('weatherHistory', JSON.stringify(history));
   }, [history]);
+  
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const handleSearchError = (errorMessage) => {
   setWeatherError(errorMessage);
@@ -43,21 +43,22 @@ function App() {
   const handleSearchSuccess = (newData) => {
     setWeatherError(null);
     setWeatherData(newData);
+    
     if(newData && newData.name){
       const historyItem = {
         id: `${newData.name}-${Date.now()}`,
         name: newData.name,
-        country: newData.sys.country,
+        country: newData.sys?.country || '',
         date: new Date().toLocaleString('en-GB', {
           day: '2-digit', month: '2-digit', year: 'numeric',
           hour: '2-digit', minute: '2-digit', hour12: true
         }).replace(/\//g, '-').replace(',', ''),
-        lat: newData.coord.lat,
-        lon: newData.coord.lon
+        lat: newData.coord?.lat,
+        lon: newData.coord?.lon
       };
     
       setHistory(prev => {
-        const filtered = prev.filter(item => item.name !== newData.name);
+        const filtered = prev.filter(item => item.name.toLowerCase() !== newData.name.toLowerCase());
         return [historyItem, ...filtered].slice(0, 10);
       });
     } 
@@ -68,36 +69,32 @@ const deleteHistoryItem = (id) => {
 };
 
 const reSearchFromHistory = async (item) => {
-  setWeatherError(null);
-  setIsSearchLoading(true);
-  setWeatherData(null); 
+    setWeatherError(null);
+    setIsSearchLoading(true);
+    
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${item.name},${item.country.toLowerCase()}&units=metric&APPID=${apiKey}`
+      );
+      const data = await response.json();
 
-  try {
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${item.name},${item.country.toLowerCase()}&units=metric&APPID=${apiKey}`
-    );
+      if (data.cod !== 200) {
+        throw new Error(data.message || "Something went wrong!");
+      }
 
-    const data = await response.json();
-
-    if (data.cod !== 200) {
-      throw new Error(data.message || "Something is gone wrong!");
-    } else {
-       const locationToRestore = {
-      displayLabel: `${item.name}, ${item.country}`,
-      city: item.name,
-      country: item.country
-    };
-      setBackupLocation(locationToRestore);
+      setBackupLocation({
+        displayLabel: `${item.name}, ${item.country}`,
+        city: item.name,
+        country: item.country
+      });
+      
       handleSearchSuccess(data);
+    } catch (err) { 
+      setWeatherError(err.message);
+    } finally {
+      setIsSearchLoading(false);
     }
-
-   
-  } catch{
-    setWeatherError(err.message);
-  } finally {
-    setIsSearchLoading(false);
-  }
-};
+  };
 
  const inputValidators = [
     new Required('Input cannot be empty'),
@@ -116,6 +113,7 @@ const reSearchFromHistory = async (item) => {
      validators={inputValidators}
      theme={theme}
      backupLocation={backupLocation}
+     setIsSearchLoading={setIsSearchLoading}
     />
     <WeatherCard data={weatherData} 
       theme={theme}

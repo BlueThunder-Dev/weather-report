@@ -4,7 +4,7 @@
   max-width: 700px;
   background: var(--dashboard-bg); 
   backdrop-filter: blur(15px);
-  border-radius: 40px;
+  border-radius: 30px;
   padding: 40px 45px;
   color: #ffffff;
   margin-top: 100px; 
@@ -52,6 +52,7 @@
   font-size: 14px;
   justify-content: space-between;
   align-items: center;
+  margin-top:10px;
 }
 
 .cityLabel { font-weight: 700;color:var(--city-label)}
@@ -180,15 +181,25 @@
 }
 
 @media screen and (max-width:600px){
+
+  .dashboard{
+    padding: 30px 30px
+  }
+
+  .locationRow {
+    align-items: flex-start;
+  }
+
   .extraInfoContainer{
     display:flex; 
     flex-direction: column-reverse;
     max-width: 140px;
+    height:22px
   }
 
   .historyInfo {
     flex-direction: column; 
-    align-items: center;
+    align-items: flex-start;
     gap: 4px; 
   }
 
@@ -199,7 +210,7 @@
   .dashboard{
     margin:0 auto;
     margin-top: 100px;  
-    width: 70%;
+    width: 80%;
   }
 
   .floatingIcon img{
@@ -212,5 +223,12 @@
   
   .temp{
     font-size: 60px
+  }
+}
+
+@media screen and (max-width:420px){
+  .dashboard{
+    width: 74%;
+    padding: 20px 25px
   }
 }

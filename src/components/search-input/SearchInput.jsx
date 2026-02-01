@@ -6,7 +6,7 @@ import { normalizeLocation } from '../../utils/normalizer/normalizeLocation';
 import SuggestionCombobox from '../suggestion-combobox/SuggestionCombobox';
 import { apiKey } from '../../utils/constants';
 
-const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onSearchError, backupLocation }) => {
+const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onSearchError, backupLocation, setIsSearchLoading }) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [isInputLoading, setIsInputLoading] = useState(false);
@@ -22,22 +22,35 @@ const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onS
 
     try {
       setIsInputLoading(true);
-      setSuggestions([])
+      setError('');
       const response = await fetch(
         `https://api.openweathermap.org/geo/1.0/direct?q=${searchQuery}&limit=5&appid=${apiKey}`,
         { signal: abortControllerRef.current.signal }
       );
       
-      if (!response.ok) throw new Error('Network response was not ok');
-      
       const data = await response.json();
-      setSuggestions(normalizeLocation(data));
-      setError('');
+      const normalized = normalizeLocation(data);
+      setSuggestions(normalized);
+      
+      if(normalized.length === 0) {
+        setError('No suggestions found');
+      }
     } catch (err) {
-      setError('Failed to retrieve suggestions')
+      if (err.name !== 'AbortError') {
+        setError('Failed to retrieve suggestions');
+      }
     } finally {
       setIsInputLoading(false);
     }
+  }, []);
+
+    const setLocationValue = useCallback((loc) => {
+    setQuery(loc.displayLabel);
+    setLocation(loc);
+    setLocationSelected(true);
+    setSuggestions([]);
+    setHighlightedIndex(-1);
+    setError('');
   }, []);
 
   useEffect(() => {
@@ -49,20 +62,14 @@ const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onS
     }
   }, [query, locationSelected, fetchSuggestions]);
 
-  useEffect(() => {
+ useEffect(() => {
     if (backupLocation?.city) {
-      setQuery(backupLocation.displayLabel);
-      setLocation(backupLocation);
-      setLocationSelected(true);
+      setLocationValue(backupLocation);
     }
-  }, [backupLocation]);
+  }, [backupLocation, setLocationValue]);
 
   const handleSelect = useCallback((loc) => {
-    setQuery(loc.displayLabel);
-    setLocation(loc);
-    setLocationSelected(true);
-    setSuggestions([]);
-    setError('');
+    setLocationValue(loc)
   }, []);
 
   const validate = () => {
@@ -83,6 +90,7 @@ const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onS
   };
 
   const handleInputChange = (e) => {
+    console.log("In inpu change")
     const value = e.target.value;
     setQuery(value);
     setLocationSelected(false);
@@ -127,6 +135,7 @@ const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onS
 
     try {
       if (onSearchError) onSearchError(null);
+      if(setIsSearchLoading)setIsSearchLoading(true)
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location.city},${location.country.toLowerCase()}&units=metric&APPID=${apiKey}`
       );
@@ -136,6 +145,8 @@ const SearchInput = ({ label, placeholder, validators = [], onSearchSuccess, onS
       if (onSearchSuccess) onSearchSuccess(data);
     } catch (err) {
       if (onSearchError) onSearchError('Unable to retrieve weather data. Please try again.');
+    }finally {
+      setIsSearchLoading(false);
     }
   };
 
