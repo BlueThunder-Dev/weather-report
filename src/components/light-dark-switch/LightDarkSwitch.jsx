@@ -1,23 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styles from './LightDarkSwitch.module.css';
 
-const LightDarkSwitch = () => {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    const theme = isDark ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [isDark]);
-
+const LightDarkSwitch = ({theme, onToggle}) => {
   return (
     <div className={styles.switchContainer}>
       <button 
-        className={`${styles.switchBase} ${isDark ? styles.dark : styles.light}`}
-        onClick={() => setIsDark(!isDark)}
+        className={`${styles.switchBase} ${theme === 'dark' ? styles.dark : styles.light}`}
+        onClick={onToggle}
         aria-label="Toggle theme"
       >
         <div className={styles.circle}>
-          {isDark ? (
+          {theme === 'dark' ? (
             <span className={styles.icon}>🌙</span>
           ) : (
             <span className={styles.icon}>☀️</span>

@@ -21,6 +21,7 @@ function App() {
   const [backupLocation, setBackupLocation] = useState(null);
 
   useEffect(() => {
+    console.log("in use eff")
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
   

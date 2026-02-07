@@ -1,64 +1,39 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { describe, it, expect, afterEach } from 'vitest';
 import LightDarkSwitch from './LightDarkSwitch';
 
 describe('LightDarkSwitch Component', () => {
+  const fakeToggle = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   afterEach(() => {
     cleanup();
-    document.documentElement.removeAttribute('data-theme');
   });
 
-  it('should initialize with dark theme by default', () => {
-    render(<LightDarkSwitch />);
-    
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-    
+  it('Should render with className containing dark with dark icon', () => {
+    render(<LightDarkSwitch theme="dark" onToggle={fakeToggle} />);
     const button = screen.getByRole('button', { name: /toggle theme/i });
+
     expect(button.className).toContain('dark');
     expect(screen.getByText('🌙')).toBeInTheDocument();
   });
 
-  it('should toggle theme to light on click and update document attribute', () => {
-    render(<LightDarkSwitch />);
+    it('Should render with className containing light with light icon', () => {
+    render(<LightDarkSwitch theme="light" onToggle={fakeToggle} />);
     const button = screen.getByRole('button', { name: /toggle theme/i });
 
-    fireEvent.click(button);
-
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
     expect(button.className).toContain('light');
     expect(screen.getByText('☀️')).toBeInTheDocument();
   });
 
-  it('should toggle back to dark on second click', () => {
-    render(<LightDarkSwitch />);
+  it('Should execute function correctly when the button is clicked',()=>{
+    render(<LightDarkSwitch theme="light" onToggle={fakeToggle} />);
     const button = screen.getByRole('button', { name: /toggle theme/i });
-
+  
     fireEvent.click(button);
-    fireEvent.click(button);
 
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-    expect(screen.getByText('🌙')).toBeInTheDocument();
-  });
-
-  it('should maintain accessibility requirements', () => {
-    render(<LightDarkSwitch />);
-    const button = screen.getByRole('button', { name: /toggle theme/i });
-
-    expect(button).toHaveAttribute('aria-label', 'Toggle theme');
-    
-    const icon = screen.getByText('🌙');
-    expect(button).toContainElement(icon);
-  });
-
-  it('should sync the data-theme attribute every time the state changes', () => {
-    render(<LightDarkSwitch />);
-    const button = screen.getByRole('button', { name: /toggle theme/i });
-
-    fireEvent.click(button);
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
-
-    fireEvent.click(button);
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-  });
+    expect(fakeToggle).toHaveBeenCalledTimes(1)
+  })
 });
